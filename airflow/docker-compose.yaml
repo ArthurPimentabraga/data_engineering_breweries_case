@@ -39,7 +39,9 @@
 version: '3'
 x-airflow-common:
   &airflow-common
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.0.2}
+  build:
+    context: .
+    dockerfile: Dockerfile
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -90,6 +92,9 @@ services:
   airflow-webserver:
     <<: *airflow-common
     command: webserver
+    environment:
+      <<: *airflow-common-env
+      PYTHONPATH: /opt/airflow:/opt/airflow/data_engineering_breweries_case:/opt/airflow/venv/
     ports:
       - 8080:8080
     healthcheck:
@@ -98,27 +103,26 @@ services:
       timeout: 10s
       retries: 5
     restart: always
-    environment:
-      <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow:/opt/airflow/data_engineering_breweries_case
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
       - ../data_engineering_breweries_case:/opt/airflow/data_engineering_breweries_case
+      - ../venv/:/opt/airflow/venv/
 
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
-    restart: always
     environment:
       <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow:/opt/airflow/data_engineering_breweries_case
+      PYTHONPATH: /opt/airflow:/opt/airflow/data_engineering_breweries_case:/opt/airflow/venv/
+    restart: always
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
       - ../data_engineering_breweries_case:/opt/airflow/data_engineering_breweries_case
+      - ../venv/:/opt/airflow/venv/
 
   airflow-worker:
     <<: *airflow-common
@@ -126,12 +130,13 @@ services:
     restart: always
     environment:
       <<: *airflow-common-env
-      PYTHONPATH: /opt/airflow:/opt/airflow/data_engineering_breweries_case
+      PYTHONPATH: /opt/airflow:/opt/airflow/data_engineering_breweries_case:/opt/airflow/venv/
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
       - ../data_engineering_breweries_case:/opt/airflow/data_engineering_breweries_case
+      - ../venv/:/opt/airflow/venv/
 
   airflow-init:
     <<: *airflow-common

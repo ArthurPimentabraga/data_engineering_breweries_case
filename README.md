@@ -4,6 +4,8 @@
 
 ## How to run
 
+<!-- CRIAR UM ARQUIVO SHELL PARA EXECUTAR TUDO DE UMA VEZ? -->
+
 ### Virtual environments creation
 
 > Pré-requisitos: Ter instalado o Python3, o pip e o venv

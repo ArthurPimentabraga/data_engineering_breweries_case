@@ -1,12 +1,6 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 from datetime import datetime
-from data_engineering_breweries_case.bronze.job import BronzeJob
-
-
-def run_bronze_job():
-    job = BronzeJob()
-    job.run()
 
 
 with DAG(
@@ -16,7 +10,10 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    bronze_job_task = PythonOperator(
-        task_id="run_bronze_job",
-        python_callable=run_bronze_job,
+    pyspark_task_2 = BashOperator(
+        task_id="run_pyspark_job_2",
+        bash_command=(
+            "source /opt/airflow/venv/bin/activate && "
+            "spark-submit --master local[*] /opt/airflow/data_engineering_breweries_case/bronze/job.py"
+        ),
     )
