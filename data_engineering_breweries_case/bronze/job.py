@@ -1,68 +1,46 @@
-import logging, requests
-from pyspark.sql import SparkSession
-import pyspark.sql.types as sparkTypes
+import requests
 from pyspark.sql import functions as f
-
-config = {
-    "url": "https://api.openbrewerydb.org/v1/breweries",
-    "headers": {
-        "Content-Type": "application/json"
-    }
-}
+from data_engineering_breweries_case.common.base_job import BaseJob
+from bronze.constants import SOURCE_CONFIG, RESPONSE_SCHEMA, SINK_CONFIG
 
 
-class BronzeJob:
+class BronzeJob(BaseJob):
     def __init__(self):
-        pass
+        super().__init__(app_name="BronzeJob")
 
-    def run(self): # TODO Dividir em métodos
-        # TODO Passar o spark session e o logger para classe mãe
 
-        spark = SparkSession.builder.appName("BronzeJob").getOrCreate()
+    def _get_source_data(self):
+        return requests.get(SOURCE_CONFIG["url"], headers=SOURCE_CONFIG["headers"])
 
-        logging.basicConfig(level=logging.INFO)
-        logger = logging.getLogger(__name__)
 
-        response = requests.get(config["url"], headers=config["headers"])
+    def _create_column_partition(self, data):
+        df = self.spark.createDataFrame(data, schema=RESPONSE_SCHEMA)
+
+        return df.withColumn(
+            SINK_CONFIG["partition_by"], f.regexp_replace(f.lower(f.col("country")), " ", "_")
+        )
+
+
+    def _save(self, df):
+        df.coalesce(1).write.mode("overwrite").partitionBy(SINK_CONFIG["partition_by"]).json(SINK_CONFIG["path"])
+
+
+    def run(self):
+        response = self._get_source_data()
 
         if response.status_code == 200:
-            logger.info("Request successful")
-            data = response.json()
+            self.logger.info("Request successful")
+            source_data = response.json()
 
-            # TODO Se não tiver dados, falhar?
+            df = self._create_column_partition(source_data)
 
-            schema = sparkTypes.StructType([
-                sparkTypes.StructField("id", sparkTypes.StringType(), True),
-                sparkTypes.StructField("name", sparkTypes.StringType(), True),
-                sparkTypes.StructField("brewery_type", sparkTypes.StringType(), True),
-                sparkTypes.StructField("street", sparkTypes.StringType(), True),
-                sparkTypes.StructField("city", sparkTypes.StringType(), True),
-                sparkTypes.StructField("state", sparkTypes.StringType(), True),
-                sparkTypes.StructField("postal_code", sparkTypes.StringType(), True),
-                sparkTypes.StructField("country", sparkTypes.StringType(), True),
-                sparkTypes.StructField("longitude", sparkTypes.FloatType(), True),
-                sparkTypes.StructField("latitude", sparkTypes.FloatType(), True),
-                sparkTypes.StructField("phone", sparkTypes.StringType(), True),
-                sparkTypes.StructField("website_url", sparkTypes.StringType(), True)
-            ])
-
-            df = spark.createDataFrame(data, schema=schema)
-
-            df = df.withColumns({
-                "country_partition": f.regexp_replace(f.lower(f.col("country")), " ", "_")
-            })
-
-            df.show(truncate=False, n=5)
+            self._save(df)
         else:
-            logger.error(
+            raise Exception(
                 f"Request failed with status code {response.status_code}"
                 f" and message: {response.text}"
             )
-            # TODO Deixar falhar?
-
-        spark.stop()
-
 
 if __name__ == "__main__":
     job = BronzeJob()
-    job.run()
+    job.execute()

@@ -1,3 +1,4 @@
 pyspark
 pytest
 apache-airflow
+boto3

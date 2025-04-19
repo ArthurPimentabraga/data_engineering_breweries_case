@@ -160,5 +160,13 @@ services:
       retries: 5
     restart: always
 
+  moto-s3:
+    image: motoserver/moto:latest
+    ports:
+      - "5000:5000"
+    environment:
+      AWS_ACCESS_KEY_ID: mock_access_key
+      AWS_SECRET_ACCESS_KEY: mock_secret_key
+
 volumes:
   postgres-db-volume:
