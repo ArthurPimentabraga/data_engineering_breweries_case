@@ -30,7 +30,6 @@ with DAG(
         bash_command=(
             "source /opt/airflow/venv/bin/activate && "
             "spark-submit --master local[*] --deploy-mode client "
-            "--packages io.delta:delta-core_2.12:2.4.0 "
             "/opt/airflow/data_engineering_breweries_case/silver/job.py"
         ),
     )

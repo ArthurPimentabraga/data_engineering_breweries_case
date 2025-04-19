@@ -27,7 +27,8 @@ RUN mkdir -p /home/airflow/.ivy2 && chown airflow:airflow /home/airflow/.ivy2
 # Baixe as dependências do Hadoop, AWS SDK e Delta Lake
 RUN wget https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar -P $SPARK_HOME/jars/ && \
     wget https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.524/aws-java-sdk-bundle-1.12.524.jar -P $SPARK_HOME/jars/ && \
-    wget https://repo1.maven.org/maven2/io/delta/delta-core_2.12/2.4.0/delta-core_2.12-2.4.0.jar -P $SPARK_HOME/jars/
+    wget https://repo1.maven.org/maven2/io/delta/delta-core_2.12/2.4.0/delta-core_2.12-2.4.0.jar -P $SPARK_HOME/jars/ && \
+    wget https://repo1.maven.org/maven2/io/delta/delta-storage/2.4.0/delta-storage-2.4.0.jar -P $SPARK_HOME/jars/
 
 # Instale o PySpark no ambiente Python
 RUN /usr/local/bin/pip install pyspark

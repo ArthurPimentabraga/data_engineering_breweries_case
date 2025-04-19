@@ -24,5 +24,5 @@ RESPONSE_SCHEMA = sparkTypes.StructType([
 
 SINK_CONFIG = {
     "partition_by": "country_partition",
-    "path": "s3a://lake/data/bronze/"
+    "path": "s3a://lake/bronze/"
 }
