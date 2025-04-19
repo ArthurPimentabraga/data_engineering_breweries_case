@@ -34,4 +34,13 @@ with DAG(
         ),
     )
 
-    bronze >> silver
+    gold = BashOperator(
+        task_id="silver_to_gold",
+        bash_command=(
+            "source /opt/airflow/venv/bin/activate && "
+            "spark-submit --master local[*] --deploy-mode client "
+            "/opt/airflow/data_engineering_breweries_case/gold/job.py"
+        ),
+    )
+
+    bronze >> silver >> gold

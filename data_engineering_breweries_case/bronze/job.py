@@ -2,6 +2,7 @@ import requests
 from pyspark.sql import functions as f
 from data_engineering_breweries_case.common.base_job import BaseJob
 from bronze.constants import SOURCE_CONFIG, RESPONSE_SCHEMA, SINK_CONFIG
+from data_engineering_breweries_case.common.utils import format_column_partition
 
 
 class BronzeJob(BaseJob):
@@ -17,7 +18,7 @@ class BronzeJob(BaseJob):
         df = self.spark.createDataFrame(data, schema=RESPONSE_SCHEMA)
 
         return df.withColumn(
-            SINK_CONFIG["partition_by"], f.regexp_replace(f.lower(f.col("country")), " ", "_")
+            SINK_CONFIG["partition_by"], format_column_partition("country")
         )
 
 
@@ -33,7 +34,7 @@ class BronzeJob(BaseJob):
             source_data = response.json()
 
             df = self._create_column_partition(source_data)
-
+            df.show(truncate=False, n=5)
             self._save(df)
         else:
             raise Exception(
