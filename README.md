@@ -2,6 +2,10 @@
 
 <!-- Sumário? -->
 
+## Design
+<!--Tabela com volumetria...-->
+- schedule diárias. Como a volumetria é baixa, a ideia seria fazer um fulload diário. 
+
 ## How to run
 
 <!-- CRIAR UM ARQUIVO SHELL PARA EXECUTAR TUDO DE UMA VEZ? -->
