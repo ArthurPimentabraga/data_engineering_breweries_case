@@ -16,6 +16,7 @@ class GoldJob(BaseJob):
         (
             df.write.format(SINK_CONFIG["format"])
             .mode(SINK_CONFIG["mode"])
+            .partitionBy(SINK_CONFIG["partition_by"])
             .save(SINK_CONFIG["path"])
         )
 
@@ -35,7 +36,7 @@ class GoldJob(BaseJob):
         df = self._get_source_data()
 
         df_aggregated = self._aggregate_brewery_data(df)
-        df_aggregated.show(truncate=False, n=5)
+        df_aggregated.show(truncate=False, n=20)
 
         self._save(df_aggregated)
 

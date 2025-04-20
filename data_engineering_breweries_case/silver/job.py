@@ -15,6 +15,7 @@ class SilverJob(BaseJob):
         (
             df.write.format(SINK_CONFIG["format"])
             .mode(SINK_CONFIG["mode"])
+            .partitionBy(SINK_CONFIG["partition_by"])
             .save(SINK_CONFIG["path"])
         )
 
@@ -24,7 +25,6 @@ class SilverJob(BaseJob):
         df = self._get_source_data()
         df.show(truncate=False, n=5)
         self._save(df)
-
 
 if __name__ == "__main__":
     job = SilverJob()

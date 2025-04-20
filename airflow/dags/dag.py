@@ -15,6 +15,8 @@ with DAG(
     default_args=default_args,
     start_date=datetime(2023, 1, 1),
     schedule_interval="0 1 * * *",
+    max_active_runs=1,
+    max_active_tasks=1,
     catchup=False,
     tags=['s3', 'api']
 ) as dag:
