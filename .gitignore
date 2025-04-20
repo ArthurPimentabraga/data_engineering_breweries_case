@@ -175,3 +175,6 @@ cython_debug/
 
 # Airflow
 airflow/logs/*
+
+# VsCode
+.vscode/

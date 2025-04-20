@@ -1,6 +1,6 @@
 from data_engineering_breweries_case.common.base_job import BaseJob
 from pyspark.sql import functions as f
-from constants import SOURCE_CONFIG, SINK_CONFIG, ENV_CONFIG
+from data_engineering_breweries_case.silver.constants import SOURCE_CONFIG, SINK_CONFIG, ENV_CONFIG
 from pyspark.sql import DataFrame
 
 

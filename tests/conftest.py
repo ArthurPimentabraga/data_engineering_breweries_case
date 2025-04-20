@@ -18,7 +18,7 @@ def create_spark_session():
         .getOrCreate()
     )
     yield spark
-    #spark.stop()
+    spark.stop()
 
 
 def get_spark_home_path() -> str:
