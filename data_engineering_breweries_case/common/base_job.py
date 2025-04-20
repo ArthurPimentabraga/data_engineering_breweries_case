@@ -3,7 +3,8 @@ from pyspark.sql import SparkSession
 from abc import ABC, abstractmethod
 
 class BaseJob(ABC):
-    def __init__(self, app_name):
+    def __init__(self, app_name: str, env_config: dict):
+        self.env_config = env_config
         self.logger = self._initialize_logger()
         self.spark = self._initialize_spark(app_name)
         self.s3 = self._initialize_s3_client()
@@ -17,7 +18,7 @@ class BaseJob(ABC):
     def _initialize_spark(self, app_name):
         return (
             SparkSession.builder.appName(app_name)
-            .config("spark.hadoop.fs.s3a.endpoint", "http://moto-s3:5000")
+            .config("spark.hadoop.fs.s3a.endpoint", self.env_config["s3a_endpoint"])
             .config("spark.hadoop.fs.s3a.access.key", "mock_access_key")
             .config("spark.hadoop.fs.s3a.secret.key", "mock_secret_key")
             .config("spark.hadoop.fs.s3a.path.style.access", "true")
@@ -31,7 +32,7 @@ class BaseJob(ABC):
     def _initialize_s3_client(self):
         return boto3.client(
             "s3",
-            endpoint_url="http://moto-s3:5000",
+            endpoint_url=self.env_config["s3a_endpoint"],
             aws_access_key_id="mock_access_key",
             aws_secret_access_key="mock_secret_key",
         )

@@ -8,7 +8,7 @@
 
 ### Virtual environments creation
 
-> Pré-requisitos: Ter instalado o Python3, o pip e o venv
+> Pré-requisitos: Ter instalado o Python3, o pip, o venv e o java
 
 Executar os seguintes comandos:
 
@@ -17,6 +17,31 @@ Executar os seguintes comandos:
 > source venv/bin/activate
 > pip install -r requirements.txt
 ```
+
+JAVA
+
+sudo apt update
+sudo apt install openjdk-11-jdk
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+
+SPARK
+
+wget https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3.tgz
+
+tar -xvzf spark-3.4.1-bin-hadoop3.tgz
+sudo mv spark-3.4.1-bin-hadoop3 /opt/spark
+
+export SPARK_HOME=/opt/spark
+export PATH=$SPARK_HOME/bin:$PATH
+
+<!-- Configurar jars necessários para executar os testes unitários -->
+sudo wget https://repo1.maven.org/maven2/io/delta/delta-core_2.12/2.4.0/delta-core_2.12-2.4.0.jar -P $SPARK_HOME/jars/
+sudo wget https://repo1.maven.org/maven2/io/delta/delta-storage/2.4.0/delta-storage-2.4.0.jar -P $SPARK_HOME/jars/
+sudo wget https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar -P $SPARK_HOME/jars/
+sudo wget https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.262/aws-java-sdk-bundle-1.12.262.jar -P $SPARK_HOME/jars/
+
 
 ### Docker
 
