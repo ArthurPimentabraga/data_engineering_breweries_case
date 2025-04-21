@@ -1,10 +1,78 @@
-# data_engineering_breweries_case
+# Data engineering breweries case
 
-<!-- Sumário? -->
+Project to extract brewery data from a API and load it into a mock S3 environment.
 
-## Design
-<!--Tabela com volumetria...-->
-- schedule diárias. Como a volumetria é baixa, a ideia seria fazer um fulload diário. 
+## Summary
+
+- [Data engineering breweries case](#data-engineering-breweries-case)
+  - [Summary](#summary)
+  - [About the project](#about-the-project)
+    - [Source data](#source-data)
+    - [Data Lake Architecture](#data-lake-architecture)
+  - [Monitoring / Alerting](#monitoring--alerting)
+  - [How to run](#how-to-run)
+    - [Virtual environments creation](#virtual-environments-creation)
+    - [Docker](#docker)
+      - [How to install docker](#how-to-install-docker)
+      - [How to install docker compose](#how-to-install-docker-compose)
+      - [How to execute](#how-to-execute)
+
+
+
+## About the project
+
+### Source data
+
+| Endpoint                                        | Volumetry | Description                             | 
+| ----------------------------------------------- | --------- | --------------------------------------- |
+| https://api.openbrewerydb.org/v1/breweries      | ~ 8369    | List of breweries and their information |
+| https://api.openbrewerydb.org/v1/breweries/meta | N/A       | API metadata, such as total breweries   |
+
+- Schema example:
+
+```JSON
+|-- id: string (nullable = true)
+|-- name: string (nullable = true)
+|-- brewery_type: string (nullable = true)
+|-- street: string (nullable = true)
+|-- city: string (nullable = true)
+|-- state: string (nullable = true)
+|-- postal_code: string (nullable = true)
+|-- country: string (nullable = true)
+|-- longitude: double (nullable = true)
+|-- latitude: double (nullable = true)
+|-- phone: string (nullable = true)
+|-- website_url: string (nullable = true)
+|-- address_1: string (nullable = true)
+|-- address_2: string (nullable = true)
+|-- address_3: string (nullable = true)
+|-- state_province: string (nullable = true)
+|-- country_partition: string (nullable = true)
+```
+
+### Data Lake Architecture
+
+| Layer  | Format | Partition by | Load type | Transformations | Observations |
+| ------ | ------ | --- | --- | --- | --- |
+| Bronze | json   | --- | --- | --- | --- |
+| Silver | delta  | --- | --- | --- | --- |
+| Gold   | delta  | --- | --- | --- | --- |
+
+layer
+Format
+Partition by
+Carregamento
+Transformações
+Observações
+
+<!-- 
+- Explicar a decisão do particionamento.
+  - Olhando os metadados, particionar por cidade, estado... as partições iam ficar muito pequenas. Preferi, particionar por pais, e ordenar com delta para otimizar a escrita e leitura, mesmo que a leitura seja filtrando por cidade.
+  - A volumetria permite um fulload diário
+- Falar sobre a ideia de parametrizar por location para um possível reprocessamento? 
+-->
+
+## Monitoring / Alerting
 
 ## How to run
 
