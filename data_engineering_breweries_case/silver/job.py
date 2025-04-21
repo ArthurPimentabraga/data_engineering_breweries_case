@@ -23,7 +23,6 @@ class SilverJob(BaseJob):
 
     def run(self):
         df = self._get_source_data()
-        df.show(truncate=False, n=5)
         self._save(df)
 
 if __name__ == "__main__":

@@ -34,10 +34,7 @@ class GoldJob(BaseJob):
 
     def run(self):
         df = self._get_source_data()
-
         df_aggregated = self._aggregate_brewery_data(df)
-        df_aggregated.show(truncate=False, n=20)
-
         self._save(df_aggregated)
 
 

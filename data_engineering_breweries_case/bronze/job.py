@@ -71,8 +71,6 @@ class BronzeJob(BaseJob):
 
         if len(source_data) > 0:
             df = self._create_column_partition(source_data)
-            df.show(truncate=False, n=5)
-            print(f"Number of records: {df.count()}")
             self._save(df)
         else:
             raise Exception("Empty response from API!")
