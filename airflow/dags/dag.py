@@ -1,8 +1,10 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime
 from datetime import datetime, timedelta
 from airflow.utils.trigger_rule import TriggerRule
+from dag_utils import get_breweries_metadata
 
 default_args = {
     "retries": 1,
@@ -16,17 +18,23 @@ with DAG(
     start_date=datetime(2023, 1, 1),
     schedule_interval="0 1 * * *",
     max_active_runs=1,
-    max_active_tasks=1,
     catchup=False,
     tags=['s3', 'api']
 ) as dag:
+
+    get_breweries_metadata_operator = PythonOperator(
+        task_id="get_breweries_metadata",
+        python_callable=get_breweries_metadata,
+        provide_context=True,
+    )
 
     bronze = BashOperator(
         task_id="source_to_bronze",
         bash_command=(
             "source /opt/airflow/venv/bin/activate && "
             "spark-submit --master local[*] --deploy-mode client "
-            "/opt/airflow/data_engineering_breweries_case/bronze/job.py"
+            "/opt/airflow/data_engineering_breweries_case/bronze/job.py "
+            "--custom_args '{{ {'brewery_metadata': ti.xcom_pull(task_ids='get_breweries_metadata')} | tojson }}'"
         ),
     )
 
@@ -50,4 +58,4 @@ with DAG(
         ),
     )
 
-    bronze >> silver >> gold
+    get_breweries_metadata_operator >> bronze >> silver >> gold
