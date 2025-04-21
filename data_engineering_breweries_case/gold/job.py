@@ -42,6 +42,5 @@ class GoldJob(BaseJob):
 
 
 if __name__ == "__main__":
-
     job = GoldJob()
     job.execute()

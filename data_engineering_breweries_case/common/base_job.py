@@ -3,6 +3,10 @@ from pyspark.sql import SparkSession
 from abc import ABC, abstractmethod
 
 class BaseJob(ABC):
+    """
+    Base class for data engineering jobs.
+    This class initializes a Spark session, an S3 client, and creating S3 buckets.
+    """
     def __init__(self, app_name: str, env_config: dict):
         self.env_config = env_config
         self.logger = self._initialize_logger()

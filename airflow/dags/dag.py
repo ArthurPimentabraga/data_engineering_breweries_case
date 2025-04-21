@@ -30,6 +30,7 @@ with DAG(
 
     bronze = BashOperator(
         task_id="source_to_bronze",
+        trigger_rule=TriggerRule.ALL_SUCCESS,
         bash_command=(
             "source /opt/airflow/venv/bin/activate && "
             "spark-submit --master local[*] --deploy-mode client "

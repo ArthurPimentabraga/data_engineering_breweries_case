@@ -12,6 +12,15 @@ class BronzeJob(BaseJob):
 
 
     def _get_total_of_pages(self, total_of_breweries: int) -> int:
+        """
+        Calculate the total number of data pages based on the total number of breweries.
+        Each page contains 200 breweries.
+
+        Args:
+            total_of_breweries (int): The total number of breweries in API.
+        Returns:
+            int: The total number of pages.
+        """
         if total_of_breweries % 200 == 0:
             return (total_of_breweries // 200) + 1
         
@@ -19,6 +28,12 @@ class BronzeJob(BaseJob):
 
 
     def _get_source_data(self) -> list:
+        """
+        Get data from the source API for all data pages that exist in the API
+
+        returns:
+            list: A list of dictionaries containing the brewery data.
+        """
         source_data = []
 
         total_of_pages = self._get_total_of_pages(self.custom_args['brewery_metadata']['total'])
