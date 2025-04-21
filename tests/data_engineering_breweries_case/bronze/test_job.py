@@ -8,7 +8,14 @@ from tests.common.constants import SOURCE_DATA, FULL_SCHEMA
 
 
 def _run_job():
-    job = BronzeJob(env_config=ENV_CONFIG_TEST)
+    custom_args = {
+        "brewery_metadata": {
+            "total": 200,
+            "per_page": 200,
+            "page": 1
+        }
+    }
+    job = BronzeJob(env_config=ENV_CONFIG_TEST, custom_args=custom_args)
     job.run()
 
 @pytest.fixture(autouse=True)

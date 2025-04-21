@@ -13,7 +13,7 @@ class BronzeJob(BaseJob):
 
     def _get_total_of_pages(self, total_of_breweries: int) -> int:
         if total_of_breweries % 200 == 0:
-            return total_of_breweries // 200
+            return (total_of_breweries // 200) + 1
         
         return (total_of_breweries // 200) + 2
 
