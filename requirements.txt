@@ -1,0 +1,7 @@
+pyspark
+pytest
+apache-airflow
+boto3
+moto
+flask-cors
+delta-spark
